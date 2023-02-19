@@ -11,7 +11,7 @@
 // socket closed automatically after 5 mins of inactivity
 
 
-var dgram = require('node:dgram');//dgram
+var dgram = require('dgram');//dgram
 
 function GetLocalIPAddress (PORT) {
     const result =  require('dns').lookup(require('os').hostname(), function (err, ip, fam) {
