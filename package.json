@@ -1,0 +1,16 @@
+{
+  "name": "snookickerp2p",
+  "version": "1.0.0",
+  "description": "https://github.com/mwarning/UDP-hole-punching-examples/blob/master/example1/udp_server.c\r https://github.com/ckennelly/hole-punch/blob/master/server.c\r https://github.com/taylorconor/p2psc",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "ws": "^8.12.1"
+  }
+}
