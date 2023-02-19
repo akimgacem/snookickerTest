@@ -18,7 +18,7 @@ function GetLocalIPAddress (PORT) {
 		console.log('Server listening on ' + ip + ":" + PORT);
 
 		//if(PORT == 3333)
-		//socket.bind(port, ip);
+		socket.bind(port, ip);
     });
 };
 
@@ -26,7 +26,7 @@ var port = process.env.PORT || 33333;
 
 var socket = dgram.createSocket('udp4');
 GetLocalIPAddress(port);
-socket.bind(port, 'https://snookicker-multiplayer-test.onrender.com');//socket.bind(port, ip);
+//socket.bind(port);//socket.bind(port, ip);
 
 var publicEndpointA = null;
 var publicEndpointB = null;
