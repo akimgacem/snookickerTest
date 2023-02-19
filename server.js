@@ -6,10 +6,15 @@
 //3. npm install --save fs 
 //4. node server.js 
 
-// render.com guide installation : https://youtu.be/q8GSWGu2roA?list=LL&t=213
+// render.com (no udp) guide installation : https://youtu.be/q8GSWGu2roA?list=LL&t=213
 // Build Command : remplacer $yarn par $npm install
 // socket closed automatically after 5 mins of inactivity
 
+//app.cyclic.sh (no websocket)
+
+//https://ably.com/pricing
+//https://pusher.com/channels/pricing
+//https://www.pubnub.com/pricing/
 
 var fs              = require('fs')
 var WebSocket = require('ws');
@@ -39,6 +44,7 @@ server.on('connection', function (socket, req) {
 		const data = JSON.parse(message);
 
 		console.log("Client "+ data.name +": "+data.msg);
+		SendMessage(socket,  "received !");
 	});  
 
 	//OnClientDisconnected
