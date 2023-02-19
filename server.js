@@ -11,69 +11,60 @@
 // socket closed automatically after 5 mins of inactivity
 
 
-var dgram = require('dgram');//dgram
+var fs              = require('fs')
+var WebSocket = require('ws');
 
 function GetLocalIPAddress (PORT) {
-    const result =  require('dns').lookup(require('os').hostname(), function (err, ip, fam) {
-		console.log('Server listening on ' + ip + ":" + PORT);
-
-		//if(PORT == 3333)
-		socket.bind(port, ip);
+    const result =  require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+		console.log('Server listening on ' + add + ":" + PORT);
     });
 };
 
-var port = process.env.PORT || 33333;
+var port = process.env.PORT || 3333;
 
-var socket = dgram.createSocket('udp4');
+var server =  new WebSocket.Server({ port: port });
 GetLocalIPAddress(port);
-//socket.bind(port);//socket.bind(port, ip);
 
-var publicEndpointA = null;
-var publicEndpointB = null;
+var clientInc = 0;
+//OnClientConnected
+server.on('connection', function (socket, req) { 
 
-socket.on('listening', function () {
-    console.log('UDP Server listening on ' + socket.address().address + ":" + socket.address().port);
+	//Welcome message
+	clientInc++;
+	console.log("Client connected ("+clientInc+")");
+	SendMessage(socket,  "Server: hello client");
+         
+	//OnClientMessageReceived
+	socket.on('message', function(message)  {
+		const data = JSON.parse(message);
+
+		console.log("Client "+ data.name +": "+data.msg);
+	});  
+
+	//OnClientDisconnected
+	socket.on('close', function(error)  {
+		clientInc--;
+		console.log("Client disconnected :" + error);
+	});
+} );
+
+//OnServer
+server.on('sessionError', function(error, session) {
+	console.error('QUIC session error:', error.message);
+});
+server.on('error', function(error)  {
+	console.error('QUIC socket error:', error.message);
+});
+server.on('close', function(error)  {
+	console.error('QUIC socket on close');
+	//clients.delete(ws);
+});
+server.on('enpointClose', function(endPoint,error)  {
+	console.error('QUIC enpoint on close'+error.message);
+	console.error(endPoint) ;
 });
 
-socket.on('message', function (message, remote) {
-    console.log(remote.address + ':' + remote.port +' - ' + message);
-
-    if(message == 'A') {
-    	publicEndpointA = {
-    		name: 'A',
-    		address: remote.address,
-    		port: remote.port
-    	}
-		console.log("Client A connected...");
-    }
-
-    if(message == 'B') {
-    	publicEndpointB = {
-    		name: 'B',
-    		address: remote.address,
-    		port: remote.port
-    	}
-		console.log("Client B connected...");
-    }
-
-    sendPublicDataToClients();
-});
-
-
-function sendPublicDataToClients () {
-	if(publicEndpointA && publicEndpointB) {
-
-		var messageForA = new Buffer(JSON.stringify(publicEndpointB));
-		socket.send(messageForA, 0, messageForA.length, publicEndpointA.port, publicEndpointA.address, function (err, nrOfBytesSent) {
-			if(err) return console.log(err);
-			console.log('> public endpoint of B sent to A');
-		});
-
-		var messageForB = new Buffer(JSON.stringify(publicEndpointA));
-		socket.send(messageForB, 0, messageForB.length, publicEndpointB.port, publicEndpointB.address, function (err, nrOfBytesSent) {
-			if(err) return console.log(err);
-			console.log('> public endpoint of A sent to B');
-		});
-
-	}
+//Message handler
+function SendMessage(socket, message){
+	socket.send(message);
 }
