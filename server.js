@@ -18,7 +18,7 @@ function GetLocalIPAddress (PORT) {
 		console.log('Server listening on ' + ip + ":" + PORT);
 
 		//if(PORT == 3333)
-		//socket.bind(port, ip);
+		socket.bind(port, ip);
     });
 };
 
@@ -26,7 +26,7 @@ var port = process.env.PORT || 33333;
 
 var socket = dgram.createSocket('udp4');
 GetLocalIPAddress(port);
-socket.bind(port);//socket.bind(port, ip);
+//socket.bind(port);//socket.bind(port, ip);
 
 var publicEndpointA = null;
 var publicEndpointB = null;
@@ -39,22 +39,21 @@ socket.on('message', function (message, remote) {
     console.log(remote.address + ':' + remote.port +' - ' + message);
 
     if(message == 'A') {
-	console.log("Client A connected...");
     	publicEndpointA = {
     		name: 'A',
     		address: remote.address,
     		port: remote.port
     	}
-		
+		console.log("Client A connected...");
     }
 
     if(message == 'B') {
-    	console.log("Client B connected...");
-	publicEndpointB = {
+    	publicEndpointB = {
     		name: 'B',
     		address: remote.address,
     		port: remote.port
     	}
+		console.log("Client B connected...");
     }
 
     sendPublicDataToClients();
